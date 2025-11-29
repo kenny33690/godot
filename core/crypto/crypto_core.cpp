@@ -226,6 +226,7 @@ CryptoCore::Chacha20Context::~Chacha20Context() {
 
 Error CryptoCore::Chacha20Context::set_key(const uint8_t *p_key) {
 	int ret = mbedtls_chacha20_setkey((mbedtls_chacha20_context *)ctx, p_key);
+	mbedtls_chacha20_starts((mbedtls_chacha20_context *)ctx, 0, 1056);
 	return ret ? FAILED : OK;
 }
 
