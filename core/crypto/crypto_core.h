@@ -106,18 +106,6 @@ public:
 		Error decrypt_cfb(size_t p_length, uint8_t p_iv[16], const uint8_t *p_src, uint8_t *r_dst);
 	};
 
-	class ChaCha20Context {
-	private:
-		void *ctx = nullptr;
-
-	public:
-		ChaCha20Context();
-		~ChaCha20Context();
-
-		void set_key(const uint8_t *p_key);
-		Error crypt(size_t p_length, const uint8_t *p_src, uint8_t *r_dst);
-	};
-
 	static String b64_encode_str(const uint8_t *p_src, size_t p_src_len);
 	static Error b64_encode(uint8_t *r_dst, size_t p_dst_len, size_t *r_len, const uint8_t *p_src, size_t p_src_len);
 	static Error b64_decode(uint8_t *r_dst, size_t p_dst_len, size_t *r_len, const uint8_t *p_src, size_t p_src_len);

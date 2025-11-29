@@ -99,12 +99,10 @@ Error FileAccessEncrypted::open_and_parse(Ref<FileAccess> p_base, const Vector<u
 		ERR_FAIL_COND_V(blen != ds, ERR_FILE_CORRUPT);
 
 		{
-			CryptoCore::ChaCha20Context ctx;
+			CryptoCore::AESContext ctx;
 
-			// ctx.set_encode_key(key.ptrw(), 256); // Due to the nature of CFB, same key schedule is used for both encryption and decryption!
-			// ctx.decrypt_cfb(ds, iv.ptrw(), data.ptrw(), data.ptrw());
-			ctx.set_key(key.ptrw());
-			ctx.crypt(ds, data.ptrw(), data.ptrw());
+			ctx.set_encode_key(key.ptrw(), 256); // Due to the nature of CFB, same key schedule is used for both encryption and decryption!
+			ctx.decrypt_cfb(ds, iv.ptrw(), data.ptrw(), data.ptrw());
 		}
 
 		data.resize(length);
