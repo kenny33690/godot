@@ -41,6 +41,7 @@
 #include <mbedtls/sha256.h>
 #if MBEDTLS_VERSION_MAJOR >= 3
 #include <mbedtls/compat-2.x.h>
+#include <mbedtls/chacha20.h>
 #endif
 
 // RandomGenerator
@@ -212,6 +213,28 @@ Error CryptoCore::AESContext::decrypt_cfb(size_t p_length, uint8_t p_iv[16], con
 	int ret = mbedtls_aes_crypt_cfb128((mbedtls_aes_context *)ctx, MBEDTLS_AES_DECRYPT, p_length, &iv_off, p_iv, p_src, r_dst);
 	return ret ? FAILED : OK;
 }
+
+CryptoCore::ChaCha20Context::ChaCha20Context() {
+	ctx = memalloc(sizeof(mbedtls_chacha20_context));
+	mbedtls_chacha20_init((mbedtls_chacha20_context *)ctx);
+}
+
+CryptoCore::ChaCha20Context::~ChaCha20Context() {
+	mbedtls_chacha20_free((mbedtls_chacha20_context *)ctx);
+	memfree((mbedtls_chacha20_context *)ctx);
+}
+
+void CryptoCore::ChaCha20Context::set_key(const uint8_t *p_key) {
+	mbedtls_chacha20_setkey((mbedtls_chacha20_context *)ctx, p_key);
+	mbedtls_chacha20_starts((mbedtls_chacha20_context *)ctx, nullptr, 1065);
+}
+
+Error CryptoCore::ChaCha20Context::crypt(size_t p_length, const uint8_t *p_src, uint8_t *r_dst) {
+	int ret  = mbedtls_chacha20_update((mbedtls_chacha20_context *)ctx, p_length, p_src, r_dst);
+	return ret ? FAILED : OK;
+}
+
+
 
 // CryptoCore
 String CryptoCore::b64_encode_str(const uint8_t *p_src, size_t p_src_len) {
